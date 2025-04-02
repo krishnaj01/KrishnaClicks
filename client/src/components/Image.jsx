@@ -25,7 +25,18 @@ const Image = ({ image }) => {
     const handleDeleteImage = async (id) => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.post(`/api/images/delete-image/${id}`);
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                toast.error('Session expired! Please login again.');
+                return navigate('/secure-admin/login-access');
+            }
+
+            const { data } = await axiosInstance.post(`/api/images/delete-image/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (data.success) {
                 toast.success('Image deleted successfully!');
                 setImages(images.filter((img) => img.id !== id));
