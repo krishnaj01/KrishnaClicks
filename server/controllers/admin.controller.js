@@ -26,7 +26,7 @@ export const adminLogin = async (req, res) => {
         res.json({ success: true, message: 'Login successful', admin: admin[0].username, jwt: token });
 
     } catch (error) {
-        console.log('Error in adminLogin controller');
+        // console.log('Error in adminLogin controller');
         res.json({ success: false, message: err.message });
     }
 }

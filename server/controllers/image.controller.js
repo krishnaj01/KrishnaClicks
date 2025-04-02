@@ -12,7 +12,7 @@ export const getAllImages = async (req, res) => {
 
         res.json({ success: true, images });
     } catch (err) {
-        console.log('Error fetching images in getAllImages controller');
+        // console.log('Error fetching images in getAllImages controller');
         res.json({ success: false, message: err.message });
     }
 }
@@ -22,7 +22,7 @@ export const getHomePageImages = async (req, res) => {
         const [images] = await db.query(getImages, [0, 6]);
         res.json({ success: true, images });
     } catch (err) {
-        console.log('Error fetching images in getHomePageImages controller');
+        // console.log('Error fetching images in getHomePageImages controller');
         res.json({ success: false, message: err.message });
     }
 }
@@ -49,8 +49,7 @@ export const addImage = async (req, res) => {
 
         res.status(201).json({ success: true, message: 'Image added successfully', image: newImage[0] });
     } catch (err) {
-        console.log('Error adding image in addImage controller');
-        console.log(err);
+        // console.log('Error adding image in addImage controller');
         res.json({ success: false, message: err.message });
     }
 }
@@ -74,7 +73,7 @@ export const removeImage = async (req, res) => {
 
         res.json({ success: true, message: 'Image removed successfully' });
     } catch (err) {
-        console.log('Error deleting image in removeImage controller');
+        // console.log('Error deleting image in removeImage controller');
         res.json({ success: false, message: err.message });
     }
 }
