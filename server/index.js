@@ -1,5 +1,5 @@
 import express from 'express'
-import connectDB from './config/mySQL.js';
+import connectDB from './config/mySql.js';
 import cors from 'cors'
 import imageRouter from './routes/image.routes.js';
 import { adminLogin } from './controllers/admin.controller.js';
