@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { db } from '../index.js';
 import { checkAdmin } from '../database/queries.js';
+import { generateJWT } from '../utils/generateJWT.js';
 
 export const adminLogin = async (req, res) => {
     try {
@@ -20,7 +21,9 @@ export const adminLogin = async (req, res) => {
             return res.json({ success: false, message: 'Invalid credentials' });
         }
 
-        res.json({ success: true, message: 'Login successful', admin: admin[0].username });
+        const token = generateJWT(admin[0].username);
+
+        res.json({ success: true, message: 'Login successful', admin: admin[0].username, jwt: token });
 
     } catch (error) {
         console.log('Error in adminLogin controller');

@@ -30,6 +30,7 @@ const AdminLogin = () => {
         setPassword('');
         setUsername('');
         localStorage.setItem('admin', data.admin);
+        localStorage.setItem('token', data.jwt);
         toast.success(data.message);
         navigate('/secure-admin/dashboard');
       } else {

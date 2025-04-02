@@ -21,6 +21,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     localStorage.removeItem('admin');
+    localStorage.removeItem('token');
     navigate('/secure-admin/login-access');
   };
 
@@ -61,7 +62,19 @@ const AdminDashboard = () => {
 
     setLoading(true);
     try {
-      const { data } = await axiosInstance.post('/api/images/add-image', { img_url: imgUrl });
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        toast.error('Session expired! Please login again.');
+        return navigate('/secure-admin/login-access');
+      }
+
+      const { data } = await axiosInstance.post('/api/images/add-image', { img_url: imgUrl }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (data.success) {
         toast.success(data.message);
         setImages([data.image, ...images]);
@@ -70,6 +83,7 @@ const AdminDashboard = () => {
       } else {
         toast.error(data.message);
       }
+      
     } catch (error) {
       toast.error(error.message);
     } finally {
