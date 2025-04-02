@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import './Image.css';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Lens from './ui/Lens';
@@ -18,6 +18,8 @@ const Image = ({ image }) => {
     const location = useLocation();
     const { images, setImages } = useContext(AppContext);
 
+    const navigate = useNavigate();
+
     const handleContextMenu = (e) => {
         e.preventDefault();
     };
@@ -32,11 +34,12 @@ const Image = ({ image }) => {
                 return navigate('/secure-admin/login-access');
             }
 
-            const { data } = await axiosInstance.post(`/api/images/delete-image/${id}`, {
+            const { data } = await axiosInstance.post(`/api/images/delete-image/${id}`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
             if (data.success) {
                 toast.success('Image deleted successfully!');
                 setImages(images.filter((img) => img.id !== id));
