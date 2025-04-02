@@ -1,5 +1,5 @@
 import express from 'express'
-import connectDB from './config/mySql.js';
+import { connectDB, initializeDatabase } from './config/mySql.js';
 import cors from 'cors'
 import imageRouter from './routes/image.routes.js';
 import { adminLogin } from './controllers/admin.controller.js';
@@ -33,15 +33,15 @@ async function dotenvLoad() {
     const PORT = process.env.PORT || 3000;
 
     try {
-        const db = await connectDB();
+        await initializeDatabase();
+        await connectDB();
         await setUpApp(PORT);
         app.listen(PORT, () => {
             console.log(`Serving on port ${PORT}`);
         });
-        return db;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const db = await dotenvLoad();
+await dotenvLoad();

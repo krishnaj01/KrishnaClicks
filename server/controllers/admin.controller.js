@@ -1,23 +1,23 @@
 import bcrypt from 'bcrypt';
-import { db } from '../index.js';
+import { pool } from '../config/mySql.js';
 import { checkAdmin } from '../database/queries.js';
 import { generateJWT } from '../utils/generateJWT.js';
 
 export const adminLogin = async (req, res) => {
     try {
         const { username, password } = req.body;
-        if(!username || !password) {
+        if (!username || !password) {
             return res.json({ success: false, message: 'Please provide username and password' });
         }
 
-        const [admin] = await db.query(checkAdmin, [username]);
-        if(!admin.length) {
+        const [admin] = await pool.query(checkAdmin, [username]);
+        if (!admin.length) {
             return res.json({ success: false, message: 'Invalid credentials' });
         }
 
         const isAdmin = await bcrypt.compare(password, admin[0].password);
 
-        if(!isAdmin) {
+        if (!isAdmin) {
             return res.json({ success: false, message: 'Invalid credentials' });
         }
 
