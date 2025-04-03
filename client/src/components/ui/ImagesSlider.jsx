@@ -10,7 +10,7 @@ const ImagesSlider = ({
     autoplay = true,
     direction = "up",
 }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(Math.floor(Math.random() * images.length));
     const [loading, setLoading] = useState(false);
     const [loadedImages, setLoadedImages] = useState([]);
 

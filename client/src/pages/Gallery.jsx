@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 
 import ImageList from '@mui/material/ImageList';
 import Box from '@mui/material/Box';
+import { IconArrowUp } from "@tabler/icons-react";
 
 import { TextAnimate } from '../components/ui/TextAnimate.jsx';
 import { GridPattern } from '../components/ui/GridPattern.jsx';
@@ -26,6 +27,8 @@ const Gallery = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
 
+    const [showButton, setShowButton] = useState(false);
+
     const fetchMoreData = async () => {
         try {
             setLoading(true);
@@ -45,6 +48,10 @@ const Gallery = () => {
         }
     }
 
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     useEffect(() => {
         const fetchImages = async () => {
             setLoading(true);
@@ -61,10 +68,18 @@ const Gallery = () => {
             }
         }
         fetchImages();
+
+        // Show button when scrolled down
+        const handleScroll = () => {
+            setShowButton(window.scrollY > 300);
+        }
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+
     }, []);
 
     return (
-        <main className='flex items-center justify-center pt-24 pb-40'>
+        <main className='flex items-center relative justify-center pt-24 pb-40'>
             <GridPattern
                 width={30}
                 height={30}
@@ -83,7 +98,7 @@ const Gallery = () => {
                 className='mt-10 mb-20 mx-10 max-w-[90vw] z-10'
             >
                 <h1
-                    className="font-bold mb-10 text-xl md:text-5xl text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
+                    className="font-bold mb-10 text-4xl md:text-5xl text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
                     <AuroraText>Frames</AuroraText> in Focus
                 </h1>
                 {images.length > 0 ?
@@ -102,8 +117,8 @@ const Gallery = () => {
                             }
                         >
                             <ImageList variant="masonry" cols={window.innerWidth < 768 ? 1 : 3} gap={10}>
-                                {images.map((item, index) => (
-                                    <Image item={item} key={item.id - index} image={item} />
+                                {images.map((item) => (
+                                    <Image item={item} key={item.id} image={item} />
                                 ))}
                             </ImageList>
                         </InfiniteScroll>
@@ -123,6 +138,17 @@ const Gallery = () => {
                     </div>
                 }
             </motion.section>
+            {showButton && (
+                <div
+                    onClick={scrollToTop}
+                    className='flex justify-center items-center fixed bottom-8 right-8 bg-[#2727278e] text-white p-3 rounded-full shadow-lg hover:bg-[#272727ce] transition-all z-50 cursor-pointer'
+                >
+                    <p className='hidden sm:block'>
+                        Back to Top
+                    </p>
+                    <IconArrowUp />
+                </div>
+            )}
         </main >
     )
 }
