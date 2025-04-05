@@ -55,7 +55,7 @@ export default function ContactMe() {
             <p className="lg:hidden text-zinc-200 text-xl md:text-2xl font-medium">Contact Me:</p>
             <FloatingDock
                 items={links}
-                mobileClassName="-translate-x-30"
+                mobileClassName="-translate-x-33"
             />
         </motion.div>
     );

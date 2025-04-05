@@ -18,6 +18,7 @@ import AppContext from '../contexts/AppContext.js';
 import { axiosInstance } from '../lib/axios.js';
 import { assets } from '../assets/assets.js';
 import { cn } from '../lib/utils.js';
+import { useLocation } from 'react-router-dom';
 
 const Gallery = () => {
 
@@ -28,6 +29,8 @@ const Gallery = () => {
     const [page, setPage] = useState(1);
 
     const [showButton, setShowButton] = useState(false);
+
+    const location = useLocation();
 
     const fetchMoreData = async () => {
         try {
@@ -80,16 +83,18 @@ const Gallery = () => {
 
     return (
         <main className='flex items-center relative justify-center pt-24 pb-40'>
-            <GridPattern
-                width={30}
-                height={30}
-                x={0}
-                y={0}
-                strokeDasharray={"4 2"}
-                className={cn(
-                    "[mask-image:radial-gradient(1700px_circle_at_center,white,red)]",
-                )}
-            />
+            {location.pathname === '/gallery' &&
+                <GridPattern
+                    width={30}
+                    height={30}
+                    x={0}
+                    y={0}
+                    strokeDasharray={"4 2"}
+                    className={cn(
+                        "[mask-image:radial-gradient(1700px_circle_at_center,white,red)]",
+                    )}
+                />
+            }
             <motion.section
                 initial={{ opacity: 0.2, y: 100 }}
                 transition={{ duration: 1 }}

@@ -18,43 +18,35 @@ export const FloatingDock = ({ items, desktopClassName, mobileClassName }) => {
 };
 
 const FloatingDockMobile = ({ items, className }) => {
-    const [open, setOpen] = useState(false);
     return (
         <div className={`relative ml-6 block md:hidden ${className} rotate-90`}>
             <AnimatePresence>
-                {open && (
-                    <motion.div
-                        layoutId="nav"
-                        className="absolute bottom-full mb-4 inset-x-0 flex flex-col gap-4">
-                        {items.map((item, idx) => (
-                            <motion.div
-                                key={item.title}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{
-                                    opacity: 0,
-                                    y: 10,
-                                    transition: {
-                                        delay: idx * 0.05,
-                                    },
-                                }}
-                                transition={{ delay: (items.length - 1 - idx) * 0.05 }}>
-                                <a href={item.href} key={item.title} target="_blank" className="h-10 w-10 rounded-full bg-cyan-900 flex items-center justify-center">
-                                    <div className="h-4 w-4">
-                                        {item.icon}
-                                    </div>
-                                </a>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                )}
+                <motion.div
+                    layoutId="nav"
+                    className="absolute bottom-full mb-4 inset-x-0 flex flex-col gap-4">
+                    {items.map((item, idx) => (
+                        <motion.div
+                            key={item.title}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{
+                                opacity: 0,
+                                y: 10,
+                                transition: {
+                                    delay: idx * 0.05,
+                                },
+                            }}
+                            transition={{ delay: (items.length - 1 - idx) * 0.05 }}>
+                            <a href={item.href} key={item.title} target="_blank" className="relative h-10 w-10 rounded-full bg-cyan-700 flex items-center justify-center">
+                                <Noise1 />
+                                <div className="h-5 w-5">
+                                    {item.icon}
+                                </div>
+                            </a>
+                        </motion.div>
+                    ))}
+                </motion.div>
             </AnimatePresence>
-            <button
-                onClick={() => setOpen(!open)}
-                className="h-10 w-10 rounded-full bg-cyan-800 flex items-center justify-center">
-                <Noise1 />
-                <IconLayoutNavbarCollapse className="h-5 w-5 text-gray-200" />
-            </button>
         </div>
     );
 };

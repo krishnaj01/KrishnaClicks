@@ -9,6 +9,8 @@ import Loader from '../components/Loader.jsx';
 
 import AppContext from '../contexts/AppContext.js';
 import { axiosInstance } from '../lib/axios.js';
+import { GridPattern } from '../components/ui/GridPattern.jsx';
+import { cn } from '../lib/utils.js';
 
 const AdminDashboard = () => {
 
@@ -83,7 +85,7 @@ const AdminDashboard = () => {
       } else {
         toast.error(data.message);
       }
-      
+
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -92,7 +94,17 @@ const AdminDashboard = () => {
   };
 
   return (
-    <main className='pt-20'>
+    <main className='pt-20 relative'>
+      <GridPattern
+        width={30}
+        height={30}
+        x={0}
+        y={0}
+        strokeDasharray={"4 2"}
+        className={cn(
+          "[mask-image:radial-gradient(1700px_circle_at_center,white,red)]",
+        )}
+      />
       <div className='flex justify-end p-4'>
         <button className="bg-zinc-600 z-10 text-white cursor-pointer px-4 py-2 rounded hover:bg-zinc-400 transition duration-200" onClick={handleLogout}>
           Logout
