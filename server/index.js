@@ -1,5 +1,6 @@
 import express from 'express'
-import { connectDB, initializeDatabase } from './config/mySql.js';
+// import { connectDB, initializeDatabase } from './config/mySql.js';
+import { connectDB, initializeDatabase } from './config/postgresNeon.js';
 import cors from 'cors'
 import imageRouter from './routes/image.routes.js';
 import { adminLogin } from './controllers/admin.controller.js';

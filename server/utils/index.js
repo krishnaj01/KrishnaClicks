@@ -1,10 +1,9 @@
-import fetch from 'node-fetch';
 import exifParser from 'exif-parser';
 
 
 export async function getCaptureDate(url) {
     const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
+    const buffer = Buffer.from(await response.arrayBuffer());
 
     const parser = exifParser.create(buffer);
     const result = parser.parse();

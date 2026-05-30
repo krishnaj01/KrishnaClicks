@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { pool } from '../config/mySql.js';
+import { pool } from '../config/postgresNeon.js';
 import { checkAdmin } from '../database/queries.js';
 import { generateJWT } from '../utils/generateJWT.js';
 
@@ -10,7 +10,7 @@ export const adminLogin = async (req, res) => {
             return res.json({ success: false, message: 'Please provide username and password' });
         }
 
-        const [admin] = await pool.query(checkAdmin, [username]);
+        const { rows: admin } = await pool.query(checkAdmin, [username]);
         if (!admin.length) {
             return res.json({ success: false, message: 'Invalid credentials' });
         }
@@ -21,7 +21,7 @@ export const adminLogin = async (req, res) => {
             return res.json({ success: false, message: 'Invalid credentials' });
         }
 
-        const token = generateJWT(admin[0].username);
+        const token = await generateJWT(admin[0].username);
 
         res.json({ success: true, message: 'Login successful', admin: admin[0].username, jwt: token });
 

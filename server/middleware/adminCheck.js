@@ -1,7 +1,9 @@
 if (process.env.NODE_ENV !== "production") {
     await import('dotenv/config');
 }
-import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose'
+
+const encoder = new TextEncoder();
 
 const adminCheck = async (req, res, next) => {
 
@@ -18,9 +20,10 @@ const adminCheck = async (req, res, next) => {
     }
 
     try {
-        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+        const secret = encoder.encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token, secret);
 
-        if (tokenDecode.username === process.env.ADMIN_USERNAME) {
+        if (payload.username === process.env.ADMIN_USERNAME) {
             next();
         } else {
             return res.json({ success: false, message: 'Not Authorized. Login Again.' });

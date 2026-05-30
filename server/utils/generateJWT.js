@@ -2,12 +2,18 @@ if (process.env.NODE_ENV !== "production") {
     await import('dotenv/config');
 }
 
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 
-export const generateJWT = (username) => {
-    const token = jwt.sign({username} , process.env.JWT_SECRET, {
-        expiresIn: "7d",
-    });
+const encoder = new TextEncoder();
+
+export const generateJWT = async (username) => {
+    const secret = encoder.encode(process.env.JWT_SECRET);
+
+    const token = await new SignJWT({ username })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('7d')
+        .sign(secret);
 
     return token;
 }

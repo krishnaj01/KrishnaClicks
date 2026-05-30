@@ -20,9 +20,9 @@ If you find it helpful and end up using it, a little mention or credit would mea
 ## 🛠️ Tech Stack
 - **Frontend:** React.js, HTML5, CSS3, Tailwind CSS, Aceternity UI, Magic UI
 - **Backend:** Node.js, Express.js
-- **Database:** MySQL
+- **Database:** PostgreSQL
 - **APIs:** RESTful API design
-- **Hosting:** Render, Koyeb, HelioHost
+- **Hosting:** Render, Koyeb, NeonDB
 
 ## 📂 Project Structure
 The project is divided into two main parts: the client (frontend) and the server (backend).
@@ -66,10 +66,7 @@ npm install
 *(Create a .env file in the server directory and add the following)*
 
 ```
-MYSQL_HOST=<your-mysql-host>
-MYSQL_USER=<your-mysql-username>
-MYSQL_PASSWORD=<your-mysql-password>
-MYSQL_DATABASE=<your-database-name>
+NEONDB_POSTGRESQL_CONNECTION_STRING=<your-neon-postgres-db-url>
 
 ADMIN_USERNAME=<your-admin-username>
 ADMIN_PASSWORD=<your-admin-password>
