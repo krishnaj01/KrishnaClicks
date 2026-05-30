@@ -30,24 +30,44 @@ export const getHomePageImages = async (req, res) => {
 
 export const addImage = async (req, res) => {
     try {
-        const { img_url } = req.body;
+        // Support multiple images
+        const { img_urls } = req.body;
 
-        if (!img_url) {
-            return res.json({ success: false, message: 'No image provided' });
+        const urls = [];
+        if (Array.isArray(img_urls)) urls.push(...img_urls);
+
+        if (!urls.length) {
+            return res.json({ success: false, message: 'No image(s) provided' });
         }
 
-        const { rows: existingImage } = await pool.query(getImageByUrl, [img_url]);
-        if (existingImage.length) {
-            return res.json({ success: false, message: 'Image already exists' });
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            const inserted = [];
+            const skipped = [];
+
+            for (const url of urls) {
+                const { rows: exists } = await client.query(getImageByUrl, [url]);
+                if (exists.length) {
+                    skipped.push({ url, reason: 'already_exists' });
+                    continue;
+                }
+
+                const date = await getCaptureDate(url);
+                const { rows: newRows } = await client.query(insertImage, [url, date]);
+                if (newRows && newRows[0]) inserted.push(newRows[0]);
+            }
+
+            await client.query('COMMIT');
+
+            res.status(201).json({ success: true, inserted, skipped, message: `${inserted.length} image(s) added, ${skipped.length} image(s) skipped` });
+        } catch (txErr) {
+            await client.query('ROLLBACK');
+            throw txErr;
+        } finally {
+            client.release();
         }
-
-        const date = await getCaptureDate(img_url);
-
-        await pool.query(insertImage, [img_url, date]);
-
-        const { rows: newImage } = await pool.query(getImageByUrl, [img_url]);
-
-        res.status(201).json({ success: true, message: 'Image added successfully', image: newImage[0] });
     } catch (err) {
         // console.log('Error adding image in addImage controller');
         res.json({ success: false, message: err.message });

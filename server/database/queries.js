@@ -26,7 +26,7 @@ const checkAdmin = `
     `;
 
 const insertImage = `
-    INSERT INTO images (img_url, date) VALUES ($1, $2)
+    INSERT INTO images (img_url, date) VALUES ($1, $2) RETURNING *
     `;
 
 const getImages = `
