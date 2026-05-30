@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Gallery from './Gallery.jsx';
 
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const { setImages } = useContext(AppContext);
   const [fields, setFields] = useState([createEmptyField()]);
+  const inputRefs = useRef({});
+  const bottomAnchorRef = useRef(null);
 
   const handleLogout = async () => {
     localStorage.removeItem('admin');
@@ -37,10 +39,6 @@ const AdminDashboard = () => {
     return counts;
   }, {});
 
-  const addField = () => {
-    setFields((prev) => [...prev, createEmptyField()]);
-  };
-
   const removeField = (id) => {
     setFields((prev) => {
       if (prev.length === 1) return [createEmptyField()];
@@ -49,16 +47,35 @@ const AdminDashboard = () => {
   };
 
   const updateField = (id, nextValue) => {
-    setFields((prev) => prev.map((field) => {
-      if (field.id !== id) return field;
+    setFields((prev) => {
+      const updated = prev.map((field) => {
+        if (field.id !== id) return field;
 
-      return {
-        ...field,
-        url: nextValue,
-        status: nextValue.trim() ? 'loading' : 'idle',
-        error: '',
-      };
-    }));
+        return {
+          ...field,
+          url: nextValue,
+          status: nextValue.trim() ? 'loading' : 'idle',
+          error: '',
+        };
+      });
+
+      const currentField = updated.find((field) => field.id === id);
+      const isLastField = updated[updated.length - 1]?.id === id;
+      const alreadyHasTrailingBlank = updated.length > 1 && !updated[updated.length - 1]?.url.trim();
+
+      if (isLastField && currentField?.url.trim() && !alreadyHasTrailingBlank) {
+        const nextField = createEmptyField();
+
+        window.requestAnimationFrame(() => {
+          bottomAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          inputRefs.current[nextField.id]?.focus();
+        });
+
+        return [...updated, nextField];
+      }
+
+      return updated;
+    });
   };
 
   const markFieldPreviewStatus = (id, status, error = '') => {
@@ -158,17 +175,9 @@ const AdminDashboard = () => {
           className='flex z-10 flex-col justify-center items-center gap-6 border border-zinc-300 p-6 rounded-lg max-w-[56vw] w-full bg-[#39393984] shadow-lg mb-[-5em]'
         >
           <div className='flex flex-col items-center justify-center gap-5 w-full'>
-            <div className='flex flex-col gap-3 w-full'>
+              <div className='flex flex-col gap-3 w-full'>
               <div className='flex justify-between items-center gap-5 w-full'>
                 <label className='text-zinc-300 mb-2 text-lg font-semibold'>Image URLs:</label>
-
-                <button
-                  type='button'
-                  onClick={addField}
-                  className='bg-zinc-600 text-white px-3 py-1 rounded hover:bg-zinc-500'
-                >
-                  + Add URL
-                </button>
               </div>
 
               <div className='mt-2 w-full flex flex-col gap-4'>
@@ -185,6 +194,9 @@ const AdminDashboard = () => {
                           type='text'
                           value={field.url}
                           onChange={(e) => updateField(field.id, e.target.value)}
+                          ref={(el) => {
+                            inputRefs.current[field.id] = el;
+                          }}
                           placeholder='Paste image URL here...'
                           className={`p-2 rounded-lg w-full bg-zinc-700 text-white focus:outline-none focus:ring-2 transition duration-200 ${isDuplicate || field.status === 'error' ? 'ring-1 ring-red-400 focus:ring-red-400' : 'focus:ring-zinc-400'}`}
                         />
@@ -219,10 +231,11 @@ const AdminDashboard = () => {
                     </div>
                   );
                 })}
+                <div ref={bottomAnchorRef} />
               </div>
 
               <div className='text-sm text-zinc-400 w-full'>
-                Use + to add more fields. Keep every URL unique. Previews appear beside each input.
+                A new field appears automatically while typing in the last one. Keep every URL unique.
               </div>
             </div>
           </div>
