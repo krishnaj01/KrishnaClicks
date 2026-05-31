@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-
-import InfiniteScroll from "react-infinite-scroll-component";
 import { motion } from 'motion/react';
 
 import ImageList from '@mui/material/ImageList';
@@ -9,7 +7,6 @@ import { IconArrowUp } from "@tabler/icons-react";
 
 import { TextAnimate } from '../components/ui/TextAnimate.jsx';
 import { GridPattern } from '../components/ui/GridPattern.jsx';
-import SparklesText from '../components/ui/SparklesText.jsx';
 import GridSkeleton from '../components/GridSkeleton.jsx';
 import AuroraText from '../components/ui/AuroraText.jsx';
 import Image from '../components/Image.jsx';
@@ -24,32 +21,11 @@ const Gallery = () => {
 
     const { images, setImages } = useContext(AppContext);
 
-    const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
 
     const [showButton, setShowButton] = useState(false);
 
     const location = useLocation();
-
-    const fetchMoreData = async () => {
-        try {
-            setLoading(true);
-            const { data } = await axiosInstance.get(`/api/images/all-images?page=${page}&limit=6`);
-            if (data.success && data.images.length > 0) {
-                setImages([...images, ...data.images]);
-                setPage(page + 1);
-            }
-            // If fewer than 6 images are returned, it means no more data
-            if (data.images.length < 6) {
-                setHasMore(false);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -59,10 +35,9 @@ const Gallery = () => {
         const fetchImages = async () => {
             setLoading(true);
             try {
-                const { data } = await axiosInstance.get(`/api/images/all-images?page=1&limit=6`);
+                const { data } = await axiosInstance.get('/api/images/all-images');
                 if (data.success) {
                     setImages(data.images);
-                    setPage(2);
                 }
             } catch (error) {
                 console.error(error);
@@ -106,27 +81,15 @@ const Gallery = () => {
                     className="font-bold mb-10 text-4xl md:text-5xl text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
                     <AuroraText>Frames</AuroraText> in Focus
                 </h1>
-                {images.length > 0 ?
+                {loading ? (
+                    <GridSkeleton />
+                ) : images.length > 0 ?
                     <Box>
-                        <InfiniteScroll
-                            dataLength={images.length}
-                            next={fetchMoreData}
-                            hasMore={hasMore}
-                            loader={<GridSkeleton />}
-                            endMessage={
-                                !loading && !hasMore && (
-                                    <div className='text-lg md:text-5xl text-center text-transparent mt-12'>
-                                        <SparklesText text="Thank You for Exploring!" className={"py-5"} />
-                                    </div>
-                                )
-                            }
-                        >
-                            <ImageList variant="masonry" cols={window.innerWidth < 768 ? 1 : 3} gap={10}>
-                                {images.map((item) => (
-                                    <Image item={item} key={item.id} image={item} />
-                                ))}
-                            </ImageList>
-                        </InfiniteScroll>
+                        <ImageList variant="masonry" cols={window.innerWidth < 768 ? 1 : 3} gap={10}>
+                            {images.map((item) => (
+                                <Image item={item} key={item.id} image={item} />
+                            ))}
+                        </ImageList>
                     </Box>
                     :
                     <div className='flex flex-col items-center justify-center mt-[15vh]'>

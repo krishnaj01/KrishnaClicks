@@ -1,6 +1,7 @@
 import express from 'express'
 // import { connectDB, initializeDatabase } from './config/mySql.js';
 import { connectDB, initializeDatabase } from './config/postgresNeon.js';
+import { connectRedis } from './config/redis.js';
 import cors from 'cors'
 import imageRouter from './routes/image.routes.js';
 import { adminLogin } from './controllers/admin.controller.js';
@@ -36,6 +37,7 @@ async function dotenvLoad() {
     try {
         await initializeDatabase();
         await connectDB();
+        await connectRedis();
         await setUpApp(PORT);
         app.listen(PORT, () => {
             console.log(`Serving on port ${PORT}`);

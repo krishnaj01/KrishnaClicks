@@ -35,6 +35,11 @@ const getImages = `
     OFFSET $1 LIMIT $2
     `;
 
+const getAllImages = `
+    SELECT * FROM images
+    ORDER BY date DESC
+    `;
+
 const getSingleImage = `
     SELECT * FROM images WHERE id = $1
     `;
@@ -47,7 +52,7 @@ const deleteImage = `
     DELETE FROM images WHERE id = $1
     `;
 
-export { createAdminTable, createImageTable, createAdmin, checkAdmin, insertImage, getImages, getSingleImage, getImageByUrl, deleteImage };
+export { createAdminTable, createImageTable, createAdmin, checkAdmin, insertImage, getImages, getAllImages, getSingleImage, getImageByUrl, deleteImage };
 
 
 // id, img_url

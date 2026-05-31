@@ -20,9 +20,9 @@ If you find it helpful and end up using it, a little mention or credit would mea
 ## 🛠️ Tech Stack
 - **Frontend:** React.js, HTML5, CSS3, Tailwind CSS, Aceternity UI, Magic UI
 - **Backend:** Node.js, Express.js
-- **Database:** PostgreSQL
+- **Database:** PostgreSQL, Redis
 - **APIs:** RESTful API design
-- **Hosting:** Render, Koyeb, NeonDB
+- **Hosting:** Render, Koyeb, NeonDB, Upstash
 
 ## 📂 Project Structure
 The project is divided into two main parts: the client (frontend) and the server (backend).
@@ -66,8 +66,6 @@ npm install
 *(Create a .env file in the server directory and add the following)*
 
 ```
-NEONDB_POSTGRESQL_CONNECTION_STRING=<your-neon-postgres-db-url>
-
 ADMIN_USERNAME=<your-admin-username>
 ADMIN_PASSWORD=<your-admin-password>
 
@@ -75,9 +73,13 @@ JWT_SECRET=<your-jwt-secret>
 
 PORT=3000
 FRONTEND_URL=http://localhost:5173
+
+NEONDB_POSTGRESQL_CONNECTION_STRING=<your-neon-postgres-db-url>
+REDIS_URL=<your-redis-url>
+
 ```
 
-3. Start the backend server:
+1. Start the backend server:
 ```bash
 npm run dev
 ```

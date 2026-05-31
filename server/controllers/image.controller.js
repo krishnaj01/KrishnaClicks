@@ -1,14 +1,34 @@
-import { deleteImage, getImageByUrl, getImages, getSingleImage, insertImage } from '../database/queries.js';
+import { deleteImage, getAllImages as getAllImagesQuery, getImageByUrl, getImages, getSingleImage, insertImage } from '../database/queries.js';
 import { pool } from '../config/postgresNeon.js';
+import { redisClient } from '../config/redis.js';
 import { getCaptureDate } from '../utils/index.js';
+
+const parseCachedImages = (cachedValue) => {
+    if (!cachedValue) return null;
+
+    const parsedValue = JSON.parse(cachedValue);
+    if (Array.isArray(parsedValue)) return parsedValue;
+    if (parsedValue && Array.isArray(parsedValue.images)) return parsedValue.images;
+
+    return null;
+};
 
 export const getAllImages = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 6;
-        const offset = (page - 1) * limit;
+        const cachedImages = await redisClient.get('all_images');
 
-        const { rows: images } = await pool.query(getImages, [offset, limit]);
+        if (cachedImages) {
+            const images = parseCachedImages(cachedImages);
+            if (images) {
+                return res.json({ success: true, images });
+            }
+
+            await redisClient.del('all_images');
+        }
+
+        const { rows: images } = await pool.query(getAllImagesQuery);
+
+        await redisClient.set('all_images', JSON.stringify(images), { EX: 3600 });
 
         res.json({ success: true, images });
     } catch (err) {
@@ -19,7 +39,19 @@ export const getAllImages = async (req, res) => {
 
 export const getHomePageImages = async (req, res) => {
     try {
+        const cachedHomePageImages = await redisClient.get('home_page_images');
+
+        if (cachedHomePageImages) {
+            const images = parseCachedImages(cachedHomePageImages);
+            if (images) {
+                return res.json({ success: true, images });
+            }
+
+            await redisClient.del('home_page_images');
+        }
+
         const { rows: images } = await pool.query(getImages, [0, 6]);
+        await redisClient.set('home_page_images', JSON.stringify(images), { EX: 3600 });
         res.json({ success: true, images });
     } catch (err) {
         // console.log('Error fetching images in getHomePageImages controller');
@@ -61,6 +93,8 @@ export const addImage = async (req, res) => {
 
             await client.query('COMMIT');
 
+            await redisClient.del('all_images', 'home_page_images');
+
             res.status(201).json({ success: true, inserted, skipped, message: `${inserted.length} image(s) added, ${skipped.length} image(s) skipped` });
         } catch (txErr) {
             await client.query('ROLLBACK');
@@ -90,6 +124,8 @@ export const removeImage = async (req, res) => {
         }
 
         await pool.query(deleteImage, [id]);
+
+        await redisClient.del('all_images', 'home_page_images');
 
         res.json({ success: true, message: 'Image removed successfully' });
     } catch (err) {
