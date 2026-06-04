@@ -28,7 +28,7 @@ export const getAllImages = async (req, res) => {
 
         const { rows: images } = await pool.query(getAllImagesQuery);
 
-        await redisClient.set('all_images', JSON.stringify(images), { EX: 7200 }); // Cache for 2 hours
+        await redisClient.set('all_images', JSON.stringify(images)); // Cache without expiration, will be cleared when images are added/removed
 
         res.json({ success: true, images });
     } catch (err) {
@@ -51,7 +51,7 @@ export const getHomePageImages = async (req, res) => {
         }
 
         const { rows: images } = await pool.query(getImages, [0, 6]);
-        await redisClient.set('home_page_images', JSON.stringify(images), { EX: 7200 }); // Cache for 2 hours
+        await redisClient.set('home_page_images', JSON.stringify(images)); // Cache without expiration, will be cleared when images are added/removed
         res.json({ success: true, images });
     } catch (err) {
         // console.log('Error fetching images in getHomePageImages controller');
