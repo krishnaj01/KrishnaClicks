@@ -10,13 +10,13 @@ const app = express()
 
 const setUpApp = async (PORT) => {
 
-    const frontendURL = process.env.FRONTEND_URL;
+    const frontendURLs = process.env.FRONTEND_URLS.split(',').map(url => url.trim());
 
     app.use(express.json());
 
     app.use(cors({
         credentials: true,
-        origin: frontendURL
+        origin: frontendURLs
     }));
 
     app.use('/api/images', imageRouter);
