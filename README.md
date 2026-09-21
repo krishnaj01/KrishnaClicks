@@ -72,7 +72,7 @@ ADMIN_PASSWORD=<your-admin-password>
 JWT_SECRET=<your-jwt-secret>
 
 PORT=3000
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URLS=http://localhost:5173,https://example.com
 
 NEONDB_POSTGRESQL_CONNECTION_STRING=<your-neon-postgres-db-url>
 REDIS_URL=<your-redis-url>
