@@ -4,7 +4,7 @@ KrishnaClicks is a personal photography portfolio showcasing moments captured th
 Feel free to explore, get inspired, and connect!
 
 ## 🚀 Live Application
-https://krishnaclicks.onrender.com/
+https://photography.krishnajhanwar.tech/
 
 <div style="display: flex; align-items: center; justify-content: space-evenly; flex-wrap: wrap; gap: 1rem">
     <img src="./server/assets/screenshots/homepage.png" alt="KrishnaClicks Home Page" style="width: 40%; height: auto;">
