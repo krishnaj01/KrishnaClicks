@@ -6,11 +6,19 @@ import {
     IconBrandGithub,
     IconBrandLinkedin,
     IconBrandInstagram,
-    IconMail
+    IconMail,
+    IconWorld
 } from "@tabler/icons-react";
 
 export default function ContactMe() {
     const links = [
+        {
+            title: "Portfolio",
+            icon: (
+                <IconWorld className="rotate-270 sm:rotate-0 h-full w-full text-neutral-500 dark:text-neutral-300" />
+            ),
+            href: "https://www.krishnajhanwar.tech/",
+        },
         {
             title: "Instagram",
             icon: (
