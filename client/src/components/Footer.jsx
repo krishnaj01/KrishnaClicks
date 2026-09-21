@@ -2,7 +2,7 @@ import React from 'react'
 import "./Footer.css"
 
 import { FaSquareInstagram, FaLinkedin } from "react-icons/fa6";
-import { FaGithubSquare } from "react-icons/fa";
+import { FaGithubSquare, FaGlobe } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FiPhone } from "react-icons/fi";
 
@@ -26,6 +26,9 @@ const Footer = () => {
                         Contact Me
                     </h2>
                     <div className='flex gap-3 items-center justify-center text-4xl'>
+                        <a href='https://www.krishnajhanwar.tech/' target="_blank" className='border p-2 rounded-full border-zinc-300'>
+                            <FaGlobe className='p-1 hover:p-0.5' />
+                        </a>
                         <a href='https://www.instagram.com/krishna.jhanwar01/' target="_blank" className='border p-2 rounded-full border-zinc-300'>
                             <FaSquareInstagram className='p-1 hover:p-0.5' />
                         </a>
